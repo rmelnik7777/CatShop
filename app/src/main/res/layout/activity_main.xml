@@ -144,7 +144,8 @@
 
     </RelativeLayout>
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/addToCart"
+        android:onClick="addToCart"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="40dp"

@@ -2,10 +2,13 @@ package com.example.firstroapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     HashMap catsMap;
     String catsName;
     double price;
+    EditText userNameEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         countTextView = findViewById(R.id.countTextView);
         countTextView.setText(String.valueOf(count));
+
+        userNameEditText = findViewById(R.id.editText);
+
         createSpinner();
         createMap();
 
@@ -42,9 +49,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setOnItemSelectedListener(this);
         spinnerArrayList = new ArrayList();
 
-        spinnerArrayList.add("Сиамская кошка");
-        spinnerArrayList.add("Persin");
-        spinnerArrayList.add("Невская маскарадная кошка");
+        spinnerArrayList.add("Сиамская");
+        spinnerArrayList.add("Персидская");
+        spinnerArrayList.add("Невская маскарадная");
 
         spinnerAdapter = new ArrayAdapter( this, android.R.layout.simple_spinner_item, spinnerArrayList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -53,15 +60,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     void createMap() {
         catsMap = new HashMap();
-        catsMap.put("Сиамская кошка", 500.0);
-        catsMap.put("Persin", 600.0);
-        catsMap.put("Невская маскарадная кошка", 1200.0);
+        catsMap.put("Сиамская", 500.0);
+        catsMap.put("Персидская", 600.0);
+        catsMap.put("Невская маскарадная", 1200.0);
     }
 
     public void minus(View view) {
-//        TextView countTextView = findViewById(R.id.countTextView);
-//        TextView countTextView = findViewById(R.id.countTextView);
-//        count = Integer.parseInt(countTextView.getText().toString());
         if (count > 0) {
             count -= 1;
             countTextView.setText(String.valueOf(count));
@@ -73,11 +77,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void plus(View view) {
-//        TextView countTextView = findViewById(R.id.countTextView);
         count += 1;
         countTextView.setText(String.valueOf(count));
         TextView priceTextView = findViewById(R.id.priceTextView);
-        priceTextView.setText("" + count*price + "$");
+        priceTextView.setText("" + count * price + "$");
 
     }
 
@@ -86,19 +89,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         catsName = spinner.getSelectedItem().toString();
         price = (double)catsMap.get(catsName);
         TextView priceTextView = findViewById(R.id.priceTextView);
-        priceTextView.setText("" + count*price + "$");
+        priceTextView.setText("" + count*  price + "$");
 
         ImageView catImageView = findViewById(R.id.priceImage);
 
         switch (catsName) {
-            case "Сиамская кошка":
+            case "Сиамская":
                 catImageView.setImageResource(R.drawable.siam);
                 break;
-            case "Невская маскарадная кошка":
+            case "Невская маскарадная":
                 catImageView.setImageResource(R.drawable.nevsk_mascar);
                 break;
+            case "Персидская":
+                catImageView.setImageResource(R.drawable.pers);
+                break;
             default:
-                catImageView.setImageResource(R.drawable.cat);
+//                catImageView.setImageResource(R.drawable.pers);
                 break;
         }
 
@@ -114,5 +120,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public void addToCart(View view) {
+        Order order = new Order();
+        order.userName = userNameEditText.getText().toString();
+        order.catName = catsName;
+        order.count = count;
+        order.orderPrice = count * price;
+        Intent orderIntent = new Intent(MainActivity.this, OrderActivity.class);
+        orderIntent.putExtra("userName", order.userName);
+        orderIntent.putExtra("catName", order.catName);
+        orderIntent.putExtra("count", order.count);
+        orderIntent.putExtra("orderPrice", order.orderPrice);
+        startActivity(orderIntent);
+
+
+
+//        Log.d("printsUserName", order.userName + order.count);
     }
 }
